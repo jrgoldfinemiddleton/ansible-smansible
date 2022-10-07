@@ -9,9 +9,14 @@ jobs:
       - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          apt update
+          apt install software-properties-common apt-transport-https curl -y
+          add-apt-repository ppa:savoury1/curl34 -y
+          apt update
+          apt install curl -y
           curl --version
           curl --request GET \
           --url "https://api.github.com/repos/jrgoldfinemiddleton/dummy1" \
           --header "Accept: application/vnd.github.v3+json" \
           --header "Authorization: Bearer $GITHUB_TOKEN" \
-          --fail
+          --fail-with-body
