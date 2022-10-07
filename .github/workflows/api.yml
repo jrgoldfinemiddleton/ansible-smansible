@@ -4,6 +4,7 @@ on:
 jobs:
   use_api:
     runs-on: ubuntu-latest
+    permissions: {}
     steps:
       - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -11,4 +12,4 @@ jobs:
           curl --request GET \
           --url "https://api.github.com/repos/jrgoldfinemiddleton/dummy1" \
           --header "Accept: application/vnd.github.v3+json" \
-          --header "Authorization: Bearer $GITHUB_TOKEN }}"
+          --header "Authorization: Bearer $GITHUB_TOKEN"
