@@ -8,7 +8,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions: {}
     steps:
-      - env:
+      - name: Hit up the API
+        env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           id
