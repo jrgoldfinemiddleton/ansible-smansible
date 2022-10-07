@@ -4,7 +4,6 @@ on:
 jobs:
   use_api:
     runs-on: ubuntu-latest
-    permissions: {}
     steps:
       - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
