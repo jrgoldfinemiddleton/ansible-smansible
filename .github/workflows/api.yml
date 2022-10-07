@@ -1,4 +1,5 @@
 ---
+name: api
 on:
   workflow_dispatch:
 jobs:
@@ -10,14 +11,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           id
-          sudo apt update
-          sudo apt install software-properties-common apt-transport-https curl -y
           sudo add-apt-repository ppa:savoury1/curl34 -y
           sudo apt update
           sudo apt install curl -y
-          curl --version
           curl --request GET \
           --url "https://api.github.com/repos/jrgoldfinemiddleton/dummy1" \
           --header "Accept: application/vnd.github.v3+json" \
-          --header "Authorization: Bearer $GITHUB_TOKEN ??" \
+          --header "Authorization: Bearer $GITHUB_TOKEN" \
           --fail-with-body
