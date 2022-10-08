@@ -1,1 +1,3 @@
+wheel==0.37.0
+setuptools==65.3.0
 yamllint==1.28.0
