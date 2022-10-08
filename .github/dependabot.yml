@@ -1,0 +1,10 @@
+---
+version: 2
+updates:
+  - package-ecosystem: pip
+    directory: /
+    schedule:
+      interval: hourly
+    commit-message:
+      prefix: chore
+      include: scope
