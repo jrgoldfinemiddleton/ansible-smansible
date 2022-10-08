@@ -2,6 +2,7 @@
 name: Lint
 on:
   - push
+  - workflow_dispatch
 jobs:
   Lint-Yaml:
     runs-on: ubuntu-22.04
