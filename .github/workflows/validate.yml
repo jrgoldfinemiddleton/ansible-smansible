@@ -4,7 +4,7 @@ on:
   - pull_request
 
 jobs:
-  "Conventional Commits":
+  validate-conventional-commits:
     runs-on: ubuntu-22.04
     steps:
       - name: Validate PR title
@@ -12,7 +12,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  "Lint YAML":
+  lint-yaml:
     runs-on: ubuntu-22.04
     needs: Conventional Commits
     steps:
