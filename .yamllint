@@ -1,4 +1,4 @@
 ---
-rules:
-  truthy:
-    check-keys: false
+extends: default
+
+ignore-from-file: .gitignore

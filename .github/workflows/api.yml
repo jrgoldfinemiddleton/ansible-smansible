@@ -1,7 +1,7 @@
 ---
 name: api
 
-on:
+on:  # yamllint disable-line rule:truthy
   push:
   workflow_dispatch:
 
