@@ -4,6 +4,8 @@ run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
 
 on:  # yamllint disable-line rule:truthy
   push:
+    branches:
+      - main
 
 jobs:
   Explore-GitHub-Actions:
