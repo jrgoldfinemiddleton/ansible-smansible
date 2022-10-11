@@ -1,0 +1,24 @@
+---
+- name: Test awx.awx collection
+  hosts: all
+  gather_facts: true
+
+  tasks:
+    - name: Ping
+      ping:
+
+    - name: Print Ansible host vars
+      debug:
+        var: hostvars[inventory_hostname]
+      ignore_errors: true
+
+    - name: Print Ansible distribution
+      debug:
+        var: ansible_distribution_release
+      ignore_errors: true
+
+    - name: Use module for awx.awx collection
+      awx.awx.host:
+        name: dummy
+        inventory: dummy
+      ignore_errors: true
