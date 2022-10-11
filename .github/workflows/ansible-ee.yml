@@ -1,0 +1,47 @@
+---
+name: Ansible Execution Environment (EE)
+
+on:  # yamllint disable-line rule:truthy
+  pull_request:
+
+jobs:
+  build-ansible-ee:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.10"
+          cache: pip
+
+      - name: Upgrade pip
+        run: pip install --upgrade pip setuptools wheel
+
+      - name: Install Python libraries
+        run: pip install -r requirements.txt
+
+      - name: Build Ansible EE
+        run: |
+          ansible-builder build \
+          --verbosity=3 \
+          --tag=my-awx-ee \
+          --container-runtime=docker \
+          --prune-images
+
+      - name: Test Ansible EE with a module
+        run: |
+          ansible-runner run . \
+          --inventory=inventory \
+          --hosts=localhost \
+          --module=debug \
+          --args msg=hello
+
+      - name: Test Ansible EE with a playbook
+        run: |
+          ansible-runner run . \
+          --container-image=my-awx-ee \
+          --inventory=inventory \
+          --playbook=playbooks/test.yml
