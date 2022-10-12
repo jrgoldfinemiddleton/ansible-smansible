@@ -4,15 +4,15 @@ version: 1
 build_arg_defaults:
   # ANSIBLE_GALAXY_CLI_COLLECTION_OPTS:
   # ANSIBLE_GALAXY_CLI_ROLE_OPTS:
-  EE_BASE_IMAGE: quay.io/ansible/ansible-runner:latest
+  EE_BASE_IMAGE: quay.io/ansible/ansible-runner:stable-2.11-latest
   EE_BUILDER_IMAGE: quay.io/ansible/ansible-builder:latest
 
 ansible_config: ansible.cfg
 
 dependencies:
-  galaxy: _build/requirements.yml
-  python: _build/requirements.txt
-  system: _build/bindep.txt
+  galaxy: requirements.yml
+  python: requirements.txt
+  system: bindep.txt
 
 additional_build_steps:
   prepend: |
