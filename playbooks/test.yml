@@ -1,24 +1,19 @@
 ---
-- name: Test awx.awx collection
-  hosts: all
+- name: Test EE collections
+  hosts: localhost
   gather_facts: true
 
+  collections:
+    - kubernetes.core
+
   tasks:
-    - name: Ping
-      ping:
-
-    - name: Print Ansible host vars
-      debug:
-        var: hostvars[inventory_hostname]
-      ignore_errors: true
-
-    - name: Print Ansible distribution
-      debug:
-        var: ansible_distribution_release
-      ignore_errors: true
-
-    - name: Use module for awx.awx collection
+    - name: Use module from awx.awx collection
       awx.awx.host:
         name: dummy
         inventory: dummy
+      ignore_errors: true
+
+    - name: Use module from kubernetes.core collection
+      k8s:
+        name: dummy
       ignore_errors: true

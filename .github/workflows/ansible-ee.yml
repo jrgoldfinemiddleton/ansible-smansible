@@ -53,15 +53,6 @@ jobs:
       - name: Install Python libraries
         run: pip install -r requirements.txt
 
-      - name: Print Python details
-        run: |
-          which python3
-          which python
-          python --version
-          ansible-builder --version
-          ansible-runner --version
-          ansible --version
-
       - name: Build Ansible EE for Ansible v${{ matrix.ansible-version }}
         run: |
           cd environments/ansible-v${ANSIBLE_VERSION}
@@ -74,8 +65,9 @@ jobs:
       - name: Test EE for Ansible v${{ matrix.ansible-version }} with a module
         run: |
           ansible-runner run . \
+            --process-isolation \
+            --process-isolation-executable=docker \
             --container-image=ansible-v${ANSIBLE_VERSION}-ee \
-            --inventory=inventory \
             --hosts=localhost \
             --module=debug \
             --args msg=hello
@@ -83,6 +75,8 @@ jobs:
       - name: Test EE for Ansible v${{ matrix.ansible-version }} with a playbook
         run: |
           ansible-runner run . \
+            --process-isolation \
+            --process-isolation-executable=docker \
             --container-image=ansible-v${ANSIBLE_VERSION}-ee \
-            --inventory=inventory \
-            --playbook=playbooks/test.yml
+            --container-volume-mount '.:/dummy' \
+            --playbook=/dummy/playbooks/test.yml
