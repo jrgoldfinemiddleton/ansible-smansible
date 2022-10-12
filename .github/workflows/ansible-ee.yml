@@ -3,9 +3,14 @@ name: Ansible Execution Environment (EE)
 
 on:  # yamllint disable-line rule:truthy
   pull_request:
+    paths:
+      - ".github/workflows/ansible-ee.yml"
+      - "environments/**"
+      - "inventory"
+      - "playbooks/test.yml"
 
 jobs:
-  build-ansible-ee:
+  cache-python-dependencies:
     runs-on: ubuntu-22.04
     steps:
       - name: Check out repository code
@@ -23,25 +28,61 @@ jobs:
       - name: Install Python libraries
         run: pip install -r requirements.txt
 
-      - name: Build Ansible EE
+  build-ansible-ee:
+    runs-on: ubuntu-22.04
+    needs: cache-python-dependencies
+    strategy:
+      fail-fast: false
+      matrix:
+        ansible-version: ["2.9", "2.10", "2.11", "2.12"]
+    env:
+      ANSIBLE_VERSION: ${{ matrix.ansible-version }}
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.10"
+          cache: pip
+
+      - name: Upgrade pip
+        run: pip install --upgrade pip setuptools wheel
+
+      - name: Install Python libraries
+        run: pip install -r requirements.txt
+
+      - name: Print Python details
         run: |
+          which python3
+          which python
+          python --version
+          ansible-builder --version
+          ansible-runner --version
+          ansible --version
+
+      - name: Build Ansible EE for Ansible v${{ matrix.ansible-version }}
+        run: |
+          cd environments/ansible-v${ANSIBLE_VERSION}
           ansible-builder build \
-          --verbosity=3 \
-          --tag=my-awx-ee \
-          --container-runtime=docker \
-          --prune-images
+            --verbosity=3 \
+            --tag=ansible-v${ANSIBLE_VERSION}-ee \
+            --container-runtime=docker \
+            --prune-images
 
-      - name: Test Ansible EE with a module
+      - name: Test EE for Ansible v${{ matrix.ansible-version }} with a module
         run: |
           ansible-runner run . \
-          --inventory=inventory \
-          --hosts=localhost \
-          --module=debug \
-          --args msg=hello
+            --container-image=ansible-v${ANSIBLE_VERSION}-ee \
+            --inventory=inventory \
+            --hosts=localhost \
+            --module=debug \
+            --args msg=hello
 
-      - name: Test Ansible EE with a playbook
+      - name: Test EE for Ansible v${{ matrix.ansible-version }} with a playbook
         run: |
           ansible-runner run . \
-          --container-image=my-awx-ee \
-          --inventory=inventory \
-          --playbook=playbooks/test.yml
+            --container-image=ansible-v${ANSIBLE_VERSION}-ee \
+            --inventory=inventory \
+            --playbook=playbooks/test.yml
