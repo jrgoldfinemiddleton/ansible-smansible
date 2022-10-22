@@ -1,0 +1,32 @@
+---
+- name: Deploy and configure DigitalOcean environment
+  hosts: localhost
+  gather_facts: true
+
+  collections:
+    - community.digitalocean
+
+  module_defaults:
+    group/community.digitalocean.all:
+      oauth_token: "{{ lookup('ansible.builtin.env', 'DO_API_TOKEN') }}"
+
+  vars_files:
+    - vault.yml
+
+  vars:
+    digital_ocean_sshkey_list:
+      - name: jason_macbook_pro
+        public: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDbdRMucw+S21wODsXzmCNuN+z5SANL20T+Ph8yTq7Ws"
+      - name: github_actions_ci
+        public: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIStRm68XKSDOcv0Kp0lsSPWrCktlx5T6hGS5kJjZKCv"
+
+  tasks:
+    - name: Ensure SSH key is set for DigitalOcean
+      digital_ocean_sshkey:
+        name: "{{ sshkey.name }}"
+        ssh_pub_key: "{{ sshkey.public }}"
+        state: "{{ sshkey.state | default('present') }}"
+      register: reg_digital_ocean_sshkey
+      loop: "{{ digital_ocean_sshkey_list }}"
+      loop_control:
+        loop_var: sshkey

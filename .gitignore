@@ -1,3 +1,5 @@
 **/artifacts/**
 environments/*/context/**
 /env/**
+**/ansible-navigator.log
+**/*-artifact-*.json

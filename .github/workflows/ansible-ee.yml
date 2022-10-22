@@ -72,7 +72,7 @@ jobs:
             --module=debug \
             --args msg=hello
 
-      - name: Test EE for Ansible v${{ matrix.ansible-version }} with a playbook
+      - name: Test EE for Ansible v${{ matrix.ansible-version }} with a playbook using ansible-runner
         run: |
           ansible-runner run . \
             --process-isolation \
@@ -80,3 +80,36 @@ jobs:
             --container-image=ansible-v${ANSIBLE_VERSION}-ee \
             --container-volume-mount '.:/dummy' \
             --playbook=/dummy/playbooks/test.yml
+
+      - name: Test EE for Ansible v${{ matrix.ansible-version }} with a playbook using ansible-navigator
+        run: |
+          ansible-navigator run \
+            --container-engine=docker \
+            --execution-environment-image=ansible-v${ANSIBLE_VERSION}-ee \
+            --pull-policy=missing \
+            --mode=stdout \
+            playbooks/test.yml
+
+      - name: Create Ansible vault password script
+        if: ${{ matrix.ansible-version }} == "2.12"
+        run: |
+          echo '#!/bin/sh' > projects/digital_ocean/vault.sh
+          echo 'echo ${ANSIBLE_VAULT_DIGITAL_OCEAN}' >> projects/digital_ocean/vault.sh
+          chmod +x projects/digital_ocean/vault.sh
+
+      - name: Deploy DigitalOcean cloud environment
+        env:
+          ANSIBLE_VAULT_DIGITAL_OCEAN: "${{ secrets.ANSIBLE_VAULT_DIGITAL_OCEAN }}"
+          DO_API_TOKEN: "${{ secrets.DO_API_TOKEN }}"
+        if: ${{ matrix.ansible-version }} == "2.12"
+        run: |
+          cd projects/digital_ocean
+          ansible-navigator run \
+            --container-engine=docker \
+            --execution-environment-image=ansible-v${ANSIBLE_VERSION}-ee \
+            --pull-policy=missing \
+            --mode=stdout \
+            --pass-environment-variable='ANSIBLE_VAULT_DIGITAL_OCEAN' \
+            --pass-environment-variable='DO_API_TOKEN' \
+            -vvv \
+            deploy.yml

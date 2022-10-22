@@ -1,4 +1,5 @@
 ---
 collections:
   - name: awx.awx
+  - name: community.digitalocean
   - name: kubernetes.core
