@@ -26,7 +26,14 @@
         name: "{{ sshkey.name }}"
         ssh_pub_key: "{{ sshkey.public }}"
         state: "{{ sshkey.state | default('present') }}"
-      register: reg_digital_ocean_sshkey
       loop: "{{ digital_ocean_sshkey_list }}"
       loop_control:
         loop_var: sshkey
+
+    - name: Gather DigitalOcean SSH keys
+      digital_ocean_sshkey_info:
+      register: reg_digital_ocean_sshkeys
+
+    - name: Display info about DigitalOcean SSH keys
+      debug:
+        var: reg_digital_ocean_sshkeys
