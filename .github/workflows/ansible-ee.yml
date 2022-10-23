@@ -8,6 +8,7 @@ on:  # yamllint disable-line rule:truthy
       - "environments/**"
       - "inventory"
       - "playbooks/test.yml"
+      - "projects/digital_ocean/**"
 
 jobs:
   cache-python-dependencies:
