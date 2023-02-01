@@ -91,7 +91,7 @@ jobs:
             --mode=stdout \
             playbooks/test.yml
 
-      - name: Create Ansible vault password script
+      - name: Create Ansible vault password script for DigitalOcean
         if: matrix.ansible-version == '2.12'
         run: |
           echo '#!/bin/sh' > projects/digital_ocean/vault.sh
@@ -114,3 +114,22 @@ jobs:
             --pass-environment-variable='DO_API_TOKEN' \
             -vvv \
             deploy.yml
+
+      - name: Create Ansible vault password script for AWX
+        if: matrix.ansible-version == '2.12'
+        run: |
+          echo '#!/bin/sh' > projects/awx/vault.sh
+          echo 'echo ${ANSIBLE_VAULT_AWX_DO}' >> projects/awx/vault.sh
+          chmod +x projects/awx/vault.sh
+
+      - name: Configure AWX hosted in DigitalOcean Kubernetes cluster
+        if: matrix.ansible-version == '2.12'
+        run: |
+          cd projects/awx
+          ansible-navigator run \
+            --container-engine=docker \
+            --execution-environment-image=ansible-v${ANSIBLE_VERSION}-ee \
+            --pull-policy=missing \
+            --mode=stdout \
+            -vvv \
+            configure_controller.yml
