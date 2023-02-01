@@ -1,0 +1,24 @@
+---
+- name: Playbook to configure AWX post-installation
+  hosts: localhost
+  connection: local
+  collections:
+    - redhat_cop.controller_configuration
+  tasks:
+    - name: Include vars from configs directory
+      ansible.builtin.include_vars:
+        dir: "{{ controller_configs_dir | default((lookup('env', 'CONTROLLER_CONFIGS_DIR') == '')
+                 | ternary('./configs', lookup('env', 'CONTROLLER_CONFIGS_DIR'))) }}"
+        ignore_files: [controller_config.yml.template]
+        extensions: ["yml"]
+      tags:
+        - always
+
+    - debug:
+        var: controller_password
+
+    - fail:
+
+    - name: Call dispatch role
+      ansible.builtin.include_role:
+        name: redhat_cop.controller_configuration.dispatch
