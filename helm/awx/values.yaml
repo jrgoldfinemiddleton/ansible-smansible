@@ -1,0 +1,6 @@
+---
+AWX:
+  enabled: true
+  name: awx
+  # TODO: fill in spec for DigitalOcean Kubernetes deployment
+  spec: {}
