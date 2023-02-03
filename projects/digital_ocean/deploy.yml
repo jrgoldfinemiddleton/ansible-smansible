@@ -8,7 +8,7 @@
 
   module_defaults:
     group/community.digitalocean.all:
-      oauth_token: "{{ lookup('ansible.builtin.env', 'DO_API_TOKEN') }}"
+      oauth_token: "{{ digital_ocean_oauth_token }}"
 
   vars_files:
     - vault.yml
