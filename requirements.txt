@@ -1,4 +1,4 @@
 ansible-builder>=3.1.1
-ansible-navigator==26.6.0
+ansible-navigator==26.8.0
 ansible-runner==2.4.3
 yamllint==1.38.0
